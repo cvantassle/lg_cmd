@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
       fputs("Exiting Parent\n", stderr);
       exit(0);
    }
-   fputs("In Child/Deamon\n",stderr);
+   /*fputs("In Child/Deamon\n",stderr);*/
    
    /* install the signal handler before making the device asynchronous */
    saio.sa_handler = signal_handler_IO;
@@ -82,6 +82,7 @@ int main(int argc, char *argv[])
    while(1)
    {
       /* Read input from the outside and sent the proper command to the TV and verify that the tv gets the command properly */
+
    }
 
    /* We should never Reach this point */

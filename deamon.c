@@ -14,6 +14,7 @@
 #include <termios.h>
 #include <errno.h>
 #include <stdlib.h>
+#include "commands.h"
 
 /* At some point I need to set this to be set via CLI or VIA a config file */
 #define SERIALDEV "/dev/ttyS0"

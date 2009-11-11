@@ -5,21 +5,21 @@
  */
 
 
-#DEFINE ON 01
-#DEFINE OFF 00
-#DEFINE TV 10
-#DEFINE AVI1 20
-#DEFINE AVI2 21
-#DEFINE COMP1 40
-#DEFINE COMP2 41
-#DEFINE RGB 60
-#DEFINE HDMI1 90
-#DEFINE HDMI2 91
-#DEFINE HDMI3 92
+#define ON 01
+#define OFF 00
+#define TV 10
+#define AVI1 20
+#define AVI2 21
+#define COMP1 40
+#define COMP2 41
+#define RGB 60
+#define HDMI1 90
+#define HDMI2 91
+#define HDMI3 92
 
 /* Commands set to the tv */
 
-#DEFINE S_POWER(set,state) ka set state
+#define S_POWER(set,state) ka set state
 
 /*
  * Input Selection data controls 
@@ -29,24 +29,24 @@
  * 60: RGB-PC
  * 90: HDMI-1 91: HDMI-2 92: HDMI-3 
  */
-#DEFINE S_INPUT(set,source) xb state source
-#DEFINE S_SCREEN_MUTE(set) kd set state
-#DEFINE S_VOL_MUTE(set,state) ke set state
-#DEFINE S_VOL_CTL(set,vol) kf set vol
+#define S_INPUT(set,source) xb state source
+#define S_SCREEN_MUTE(set) kd set state
+#define S_VOL_MUTE(set,state) ke set state
+#define S_VOL_CTL(set,vol) kf set vol
 
 /*
  * Return data from the tv
  */
 
-#DEFINE R_POWER_SUCCESS(set)
-#DEFINE R_POWER_FAILURE(set)
-#DEFINE R_INPUT
-#DEFINE R_SCREEN_MUTE
-#DEFINE R_VOL_MUTE
-#DEFINE R_VOL_UP
-#DEFINE R_VOL_DN
+#define R_POWER_SUCCESS(set,state) a set OK state
+#define R_POWER_FAILURE(set,state) a set NG state
+#define R_INPUT_SUCCESS(set,source) b set OK source
+#define R_INPUT_FAILURE(set,source) b set NG source
+#define R_SCREEN_MUTE(set,state) d set OK state
+#define R_SCREEN_MUTE_FAILURE(set,state) d set NG state
+#define R_MUTE_SUCCESS(set,state) e set OK state
+#define R_MUTE_FAILUTRE(set,state) e set NG state
+#define R_VOL_SUCCESS(set,vol) f set set OK vol
+#define R_VOL_FAILURE(set,vol) f set NG vol
 
 
-
-
- 

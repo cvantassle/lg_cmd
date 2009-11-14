@@ -32,7 +32,9 @@ int main(int argc, char *argv[])
    struct sigaction saio;
    char from_tv[20];
    char to_tv[20];
-
+   /* This needs to be set 
+   int tv_id=00;
+   
    /* Deamonize the Application */
    if ((pid= fork()) < 0 )
    {  perror("Fork");

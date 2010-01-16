@@ -49,4 +49,9 @@
 #define R_VOL_SUCCESS(set,vol) f set set OK vol
 #define R_VOL_FAILURE(set,vol) f set NG vol
 
+int get_cmd( int fd )
+{
+   return 0;
+}
+
 

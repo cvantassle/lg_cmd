@@ -1,3 +1,4 @@
+
 /*
  * This is the Deamon part of the application.
  * This part will mantain the Setting that can not be changed
@@ -14,7 +15,7 @@
 #include <termios.h>
 #include <errno.h>
 #include <stdlib.h>
-#include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/socket.h>
 #include "commands.h"
 
@@ -31,6 +32,7 @@ int main(int argc, char *argv[])
    int CMD = 0;
    int pid;
    int cmd_in = 0;
+   int fifo = 0;
    struct termios ctl_port;
    struct sigaction saio;
    char from_tv[20];
@@ -44,11 +46,11 @@ int main(int argc, char *argv[])
    {  perror("Fork");
       exit(errno);
    }
-   else if ( pid != 0)
+   /*else if ( pid != 0)
    {
       fputs("Exiting Parent\n", stderr);
       exit(0);
-   }
+      }*/
      
    /* install the signal handler before making the device asynchronous */
    saio.sa_handler = signal_handler_IO;
@@ -73,11 +75,22 @@ int main(int argc, char *argv[])
    ctl_port.c_cflag &= ~CRTSCTS;         
    tcflush(fd, TCIFLUSH);
    tcsetattr(fd, TCSANOW,&ctl_port);
-  
+
+   /* make a fifo to read the comannds from */
+   if (( mkfifo("/tmp/lg_cmd",(S_IWUSR|S_IRUSR|S_IWGRP)) <0 ) && (errno != EEXIST))
+   {
+      perror("mkfifo");
+      exit(1);
+   }	
+   if ((open("/tmp/lg_cmd", (O_NONBLOCK|O_RDONLY)) < 0 ))
+   {
+      perror("open");
+      exit(1);
+   }
    while(1)
    {
       /* Read input from the outside and sent the proper command to the TV and verify that the tv gets the command properly */
-      switch ((CMD = (get_cmd(cmd_in) )))
+      switch (CMD)
       {
       case ON:
 	 break;

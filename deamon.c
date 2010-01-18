@@ -57,13 +57,13 @@ int main(int argc, char *argv[])
    
   
    /* install the signal handler before making the device asynchronous */
-   saio.sa_handler = signal_handler_IO;
+   /*  saio.sa_handler = signal_handler_IO;
    saio.sa_flags = 0;
    saio.sa_restorer = NULL;
-   sigaction(SIGIO,&saio,NULL);
+   sigaction(SIGIO,&saio,NULL); 
    fcntl(serial_fd, F_SETOWN, getpid());
    fcntl(serial_fd, F_SETFL, FASYNC);
-
+   */
    if ( (serial_fd=open(SERIALDEV, O_RDWR | O_NOCTTY | O_NONBLOCK )) < 0)
    {
       perror(SERIALDEV);
@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
       exit(1);
    }
     
-   if ((fifo_fd = open(CMD_FIFO, (O_RDONLY))) > 0 )
+   if ((fifo_fd = open(CMD_FIFO, O_RDONLY )) < 0 )
    {
       perror("open");
       exit(1);

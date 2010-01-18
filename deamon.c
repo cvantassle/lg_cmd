@@ -21,51 +21,55 @@
 
 /* At some point I need to set this to be set via CLI or VIA a config file */
 #define SERIALDEV "/dev/ttyS0"
+#define CMD_FIFO  "/tmp/lg_cmd"
 void signal_handler_IO (int status);
 
 int read_status = 0;
 
 int main(int argc, char *argv[])
 {
-   int fd = 0;
+   int serial_fd = 0;
    int res = 0;
    int CMD = 0;
-   int pid;
-   int cmd_in = 0;
-   int fifo = 0;
+   pid_t pid;
+   int cmd;
+   int fifo_fd;
    struct termios ctl_port;
    struct sigaction saio;
    char from_tv[20];
    char to_tv[20];
-   /* This needs to be set 
+   char action[10];
+/* This needs to be set 
    int tv_id=00; 
    */
    
    /* Deamonize the Application */
-   if ((pid= fork()) < 0 )
-   {  perror("Fork");
+   if ((pid = fork()) == -1  )
+   {
+      perror("Fork");
       exit(errno);
    }
-   /*else if ( pid != 0)
-   {
+   else if ( pid != 0 )
+   {  
       fputs("Exiting Parent\n", stderr);
       exit(0);
-      }*/
-     
+   }
+   
+  
    /* install the signal handler before making the device asynchronous */
    saio.sa_handler = signal_handler_IO;
    saio.sa_flags = 0;
    saio.sa_restorer = NULL;
    sigaction(SIGIO,&saio,NULL);
-   fcntl(fd, F_SETOWN, getpid());
-   fcntl(fd, F_SETFL, FASYNC);
+   fcntl(serial_fd, F_SETOWN, getpid());
+   fcntl(serial_fd, F_SETFL, FASYNC);
 
-   if ( (fd=open(SERIALDEV, O_RDWR | O_NOCTTY | O_NONBLOCK )) < 0)
+   if ( (serial_fd=open(SERIALDEV, O_RDWR | O_NOCTTY | O_NONBLOCK )) < 0)
    {
       perror(SERIALDEV);
-      exit -1;
+      exit(1);
    }
-   tcgetattr(fd, &ctl_port);
+   tcgetattr(serial_fd, &ctl_port);
    cfsetospeed(&ctl_port, B9600);
    ctl_port.c_cflag |= (CLOCAL | CREAD);
    ctl_port.c_cflag &= ~PARENB; 
@@ -73,22 +77,33 @@ int main(int argc, char *argv[])
    ctl_port.c_cflag &= ~CSIZE;
    ctl_port.c_cflag |=  CS8;                              
    ctl_port.c_cflag &= ~CRTSCTS;         
-   tcflush(fd, TCIFLUSH);
-   tcsetattr(fd, TCSANOW,&ctl_port);
-
+   tcflush(serial_fd, TCIFLUSH);
+   tcsetattr(serial_fd, TCSANOW,&ctl_port);
+   
    /* make a fifo to read the comannds from */
-   if (( mkfifo("/tmp/lg_cmd",(S_IWUSR|S_IRUSR|S_IWGRP)) <0 ) && (errno != EEXIST))
+   if ( ( mkfifo(CMD_FIFO,(S_IWUSR|S_IRUSR|S_IWGRP)) ) && (errno != EEXIST )) 
    {
       perror("mkfifo");
       exit(1);
-   }	
-   if ((open("/tmp/lg_cmd", (O_NONBLOCK|O_RDONLY)) < 0 ))
+   }
+    
+   if ((fifo_fd = open(CMD_FIFO, (O_RDONLY))) > 0 )
    {
       perror("open");
       exit(1);
    }
-   while(1)
+   
+   for(;;)
    {
+      fputs("\nIn For loop\n", stderr); 
+      /*if (( read(fifo_fd,action,10) < 0)) */
+      if ( read(fifo_fd, action, 10) == -1)
+      {
+	 perror("read()");
+	 exit(1);
+      }
+      
+      fputs("After Read\n", stderr); 
       /* Read input from the outside and sent the proper command to the TV and verify that the tv gets the command properly */
       switch (CMD)
       {
@@ -120,7 +135,8 @@ int main(int argc, char *argv[])
    }
 
    /* We should never Reach this point */
-   close(fd);
+   close(serial_fd);
+   close(fifo_fd);
    exit(0);
 }
    

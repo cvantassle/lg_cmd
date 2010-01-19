@@ -95,15 +95,14 @@ int main(int argc, char *argv[])
    
    for(;;)
    {
-      fputs("\nIn For loop\n", stderr); 
-      /*if (( read(fifo_fd,action,10) < 0)) */
-      if ( read(fifo_fd, action, 10) == -1)
+      if (( read(fifo_fd,action,10) < 0)) 
+      /*if ( read(fifo_fd, action, 10) == -1) */
       {
 	 perror("read()");
 	 exit(1);
       }
       
-      fputs("After Read\n", stderr); 
+       
       /* Read input from the outside and sent the proper command to the TV and verify that the tv gets the command properly */
       switch (CMD)
       {

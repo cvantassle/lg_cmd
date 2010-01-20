@@ -15,6 +15,7 @@
 #include <termios.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
 #include "commands.h"
@@ -24,13 +25,14 @@
 #define CMD_FIFO  "/tmp/lg_cmd"
 void signal_handler_IO (int status);
 
-int read_status = 0;
+
 
 int main(int argc, char *argv[])
 {
    int serial_fd = 0;
    int res = 0;
    int CMD = 0;
+   int read_status = 0;
    pid_t pid;
    int cmd;
    int fifo_fd;
@@ -87,23 +89,24 @@ int main(int argc, char *argv[])
       exit(1);
    }
     
-   if ((fifo_fd = open(CMD_FIFO, O_RDONLY )) < 0 )
+   if ( (fifo_fd = open(CMD_FIFO, O_RDONLY )) < 0 )
    {
-      perror("open");
+      perror("fopen");
       exit(1);
    }
    
-   for(;;)
+   while(1)
    {
-      if (( read(fifo_fd,action,10) < 0)) 
-      /*if ( read(fifo_fd, action, 10) == -1) */
+      
+      
+      if (  read(fifo_fd, action, 10) < 0 )
       {
 	 perror("read()");
 	 exit(1);
       }
       
-       
-      /* Read input from the outside and sent the proper command to the TV and verify that the tv gets the command properly */
+      
+      /*Read input from the outside and sent the proper command to the TV and verify that the tv gets the command properly */
       switch (CMD)
       {
       case ON:
@@ -131,7 +134,7 @@ int main(int argc, char *argv[])
       default:
 	 break;
       };
-   }
+   } 
 
    /* We should never Reach this point */
    close(serial_fd);

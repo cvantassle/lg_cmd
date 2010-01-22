@@ -18,29 +18,34 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
+#include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
 #include "commands.h"
 
 /* At some point I need to set this to be set via CLI or VIA a config file */
 #define SERIALDEV "/dev/ttyS0"
 #define CMD_FIFO  "/tmp/lg_cmd"
-void signal_handler_IO (int status);
+#define MAX_FD	  3
+//void signal_handler_IO (int status,siginfo_t *info, void *context);
 
 
 
 int main(int argc, char *argv[])
 {
-   int serial_fd = 0;
+   int serial_fd, fifo_fd, endfd;
    int res = 0;
-   int CMD = 0;
    int read_status = 0;
    pid_t pid;
-   int cmd;
-   int fifo_fd;
-   struct termios ctl_port;
-   struct sigaction saio;
    char from_tv[20];
    char to_tv[20];
-   char action[10];
+   char cmd[10];
+   fd_set inputs;
+   struct termios ctl_port;
+   struct sockaddr_in lg_cmd;
 /* This needs to be set 
    int tv_id=00; 
    */
@@ -57,15 +62,6 @@ int main(int argc, char *argv[])
       exit(0);
    }
    
-  
-   /* install the signal handler before making the device asynchronous */
-   /*  saio.sa_handler = signal_handler_IO;
-   saio.sa_flags = 0;
-   saio.sa_restorer = NULL;
-   sigaction(SIGIO,&saio,NULL); 
-   fcntl(serial_fd, F_SETOWN, getpid());
-   fcntl(serial_fd, F_SETFL, FASYNC);
-   */
    if ( (serial_fd=open(SERIALDEV, O_RDWR | O_NOCTTY | O_NONBLOCK )) < 0)
    {
       perror(SERIALDEV);
@@ -81,60 +77,59 @@ int main(int argc, char *argv[])
    ctl_port.c_cflag &= ~CRTSCTS;         
    tcflush(serial_fd, TCIFLUSH);
    tcsetattr(serial_fd, TCSANOW,&ctl_port);
-   
-   /* make a fifo to read the comannds from */
-   if ( ( mkfifo(CMD_FIFO,(S_IWUSR|S_IRUSR|S_IWGRP)) ) && (errno != EEXIST )) 
+  
+   /* make a fifo to read the comannds from I'm not going to bother with this.
+      It does not work the way I expect it to and dont want to deal with it.
+      I will use a local TCP/IP socket
+   if ( ( mkfifo(CMD_FIFO,( S_IWUSR|S_IRUSR|S_IWGRP)) ) && (errno != EEXIST )) 
    {
-      perror("mkfifo");
+   perror("mkfifo");
+   exit(1);
+   }
+   */
+   if ((fifo_fd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
+   {
+      perror("bind");
       exit(1);
    }
-    
-   if ( (fifo_fd = open(CMD_FIFO, O_RDONLY )) < 0 )
+
+   memset(&lg_cmd, 0, sizeof(lg_cmd));       		/* Clear struct */
+   lg_cmd.sin_family = AF_INET;                  	/* Internet/IP */
+   lg_cmd.sin_addr.s_addr = htonl(INADDR_ANY);  	/* Incoming addr */
+   lg_cmd.sin_port = htons(6100);     		/* server port */
+   if (bind(fifo_fd, (struct sockaddr *) &lg_cmd, sizeof(lg_cmd)) < 0)
    {
-      perror("fopen");
+      perror("bind");
       exit(1);
    }
-   
+   /* Listen on the server socket */
+   if (listen(fifo_fd, 10) < 0)
+   {
+      perror("listen");
+      exit(1);
+   }
+
+   /* if ( (fifo_fd = open( CMD_FIFO, O_RDONLY | O_NOCTTY | O_NONBLOCK)) < 0 )
+   {
+      perror("open");
+      exit(1);
+   }
+   */
+
    while(1)
    {
-      
-      
-      if (  read(fifo_fd, action, 10) < 0 )
+      if ((fifo_fd = accept(fifo_fd, (struct sockaddr *) &fifo_fd, &fifo_fd)) < 0)
+      {
+	 perror("accept");
+	 exit(1);
+      }
+      if (  read(fifo_fd, cmd, 10) < 0 )
       {
 	 perror("read()");
 	 exit(1);
-      }
-      
-      
-      /*Read input from the outside and sent the proper command to the TV and verify that the tv gets the command properly */
-      switch (CMD)
-      {
-      case ON:
-	 break;
-      case OFF:
-	 break;
-      case TV:
-	 break;
-      case AVI1:
-	 break;
-      case AVI2:
-	 break;
-      case COMP1:
-	 break;
-      case COMP2:
-	 break;
-      case RGB:
-	 break;
-      case HDMI1:
-	 break;
-      case HDMI2:
-	 break;
-      case HDMI3:
-	 break;
-      default:
-	 break;
-      };
-   } 
+      }		
+      fputs(cmd,stderr); 
+   };
 
    /* We should never Reach this point */
    close(serial_fd);
@@ -143,8 +138,4 @@ int main(int argc, char *argv[])
 }
    
 
-void signal_handler_IO (int status)
-{
-
-}
 

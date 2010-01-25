@@ -78,16 +78,8 @@ int main(int argc, char *argv[])
    tcflush(serial_fd, TCIFLUSH);
    tcsetattr(serial_fd, TCSANOW,&ctl_port);
   
-   /* make a fifo to read the comannds from I'm not going to bother with this.
-      It does not work the way I expect it to and dont want to deal with it.
-      I will use a local TCP/IP socket
-   if ( ( mkfifo(CMD_FIFO,( S_IWUSR|S_IRUSR|S_IWGRP)) ) && (errno != EEXIST )) 
-   {
-   perror("mkfifo");
-   exit(1);
-   }
-   */
-   if ((fifo_fd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
+
+   if ((fifo_fd = socket(PF_INET,SOCK_DGRAM, IPPROTO_UDP)) < 0)
    {
       perror("bind");
       exit(1);
@@ -102,33 +94,18 @@ int main(int argc, char *argv[])
       perror("bind");
       exit(1);
    }
-   /* Listen on the server socket */
-   if (listen(fifo_fd, 10) < 0)
-   {
-      perror("listen");
-      exit(1);
-   }
-
-   /* if ( (fifo_fd = open( CMD_FIFO, O_RDONLY | O_NOCTTY | O_NONBLOCK)) < 0 )
-   {
-      perror("open");
-      exit(1);
-   }
-   */
+   res=sizeof(lg_cmd);
+      
 
    while(1)
    {
-      if ((fifo_fd = accept(fifo_fd, (struct sockaddr *) &fifo_fd, &fifo_fd)) < 0)
+      if (( recvfrom(fifo_fd, cmd, 10, 0,(struct sockaddr *) &lg_cmd ,&res)) <0)
       {
-	 perror("accept");
+	 perror("recvfrom");
 	 exit(1);
-      }
-      if (  read(fifo_fd, cmd, 10) < 0 )
-      {
-	 perror("read()");
-	 exit(1);
-      }		
-      fputs(cmd,stderr); 
+      }  
+      if ( res != 0)
+	 fputs(cmd,stderr);
    };
 
    /* We should never Reach this point */
@@ -136,6 +113,6 @@ int main(int argc, char *argv[])
    close(fifo_fd);
    exit(0);
 }
-   
+
 
 

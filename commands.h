@@ -4,6 +4,24 @@
  * to indicate the command status
  */
 
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/signal.h>
+#include <sys/types.h>
+#include <termios.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/socket.h>
+#include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
 
 #define ON 01
 #define OFF 00

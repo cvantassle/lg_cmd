@@ -37,8 +37,6 @@ int get_cmd( char *cmd, int len)
    if( !strncmp(cmd,"HDMI1",len)) return HDMI1;
    if( !strncmp(cmd,"HDMI2",len)) return HDMI2;
    if( !strncmp(cmd,"HDMI3",len)) return HDMI3;
-   if( !strncmp(cmd,"PREVINPUT",len)) return PREV;
-   if( !strncmp(cmd,"NEXTINPUT",len)) return NEXT;
 
 }
 
@@ -162,10 +160,6 @@ int main(int argc, char *argv[])
 	    break;
 	 case HDMI3:
 	    printf("HDMI3\n");
-	    break;
-	 case NEXTINPUT:
-	    break;
-	 case PREVINPUT:
 	    break;
 	 default:
 	    break;

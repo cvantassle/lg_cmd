@@ -37,6 +37,8 @@ int get_cmd( char *cmd, int len)
    if( !strncmp(cmd,"HDMI1",len)) return HDMI1;
    if( !strncmp(cmd,"HDMI2",len)) return HDMI2;
    if( !strncmp(cmd,"HDMI3",len)) return HDMI3;
+   if( !strncmp(cmd,"PREVINPUT",len)) return PREV;
+   if( !strncmp(cmd,"NEXTINPUT",len)) return NEXT;
 
 }
 
@@ -44,13 +46,12 @@ int get_cmd( char *cmd, int len)
 
 int main(int argc, char *argv[])
 {
-   int serial_fd, fifo_fd, cmd_len;
+   int serial_fd, fifo_fd, cmd_len, vol, unmute;
    int res = 0;
    pid_t pid;
    char from_tv[20];
    char to_tv[20];
    char cmd[10];
-   int vol;
    struct termios ctl_port;
    struct sockaddr_in lg_cmd;
 /* This needs to be set  */
@@ -115,15 +116,21 @@ int main(int argc, char *argv[])
       switch( get_cmd(cmd, cmd_len))
 	 {
 	 case VOLUP:
+	    vol++;
 	    printf("VOLUP\n");
 	    break;
 	    /* vol up*/
 	 case VOLDN:
+	    vol--;
 	    printf("VOLDN\n");
 	    break;
 	    /* vol down*/
 	 case MUTE:
-	    printf("MUTE\n");
+	    if (vol)
+	    {
+	       vol = mute;
+	       printf("MUTE\n");
+	    }
 	    break;
 	    /* Mute */
 	 case ON:
@@ -155,6 +162,10 @@ int main(int argc, char *argv[])
 	    break;
 	 case HDMI3:
 	    printf("HDMI3\n");
+	    break;
+	 case NEXTINPUT:
+	    break;
+	 case PREVINPUT:
 	    break;
 	 default:
 	    break;

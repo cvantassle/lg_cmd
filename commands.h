@@ -37,6 +37,9 @@
 #define VOLUP 100
 #define VOLDN 110
 #define MUTE  111
+
+#define NEXTINPUT 200
+#define PREVINPUT 210
 /* Commands set to the tv */
 
 #define S_POWER(set,state) ka set state

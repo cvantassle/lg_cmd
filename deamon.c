@@ -31,10 +31,36 @@
 #define CMD_FIFO  "/tmp/lg_cmd"
 #define MAX_FD	  3
 
+int get_cmd( char *cmd, int len)
+{
+   char *newline;
+   /* Check and remove newlines */
+   if ( (newline = strrchr( cmd, '\n')))
+   {
+      newline = '\0';
+      len--;
+   }
+   if( !strncmp(cmd,"VOLUP",len)) return VOLUP;
+   if( !strncmp(cmd,"VOLDN",len)) return VOLDN;
+   if( !strncmp(cmd,"MUTE",len)) return MUTE;
+   if( !strncmp(cmd,"ON",len)) return ON;
+   if( !strncmp(cmd,"OFF",len)) return OFF;
+   if( !strncmp(cmd,"AVI1",len)) return AVI1;
+   if( !strncmp(cmd,"AVI2",len)) return AVI2;
+   if( !strncmp(cmd,"COMP1",len)) return COMP1;
+   if( !strncmp(cmd,"COMP2",len)) return COMP2;
+   if( !strncmp(cmd,"RGB",len)) return RGB;
+   if( !strncmp(cmd,"HDMI1",len)) return HDMI1;
+   if( !strncmp(cmd,"HDMI2",len)) return HDMI2;
+   if( !strncmp(cmd,"HDMI3",len)) return HDMI3;
+
+}
+
+
 
 int main(int argc, char *argv[])
 {
-   int serial_fd, fifo_fd;
+   int serial_fd, fifo_fd, cmd_len;
    int res = 0;
    pid_t pid;
    char from_tv[20];
@@ -97,12 +123,12 @@ int main(int argc, char *argv[])
    while(1)
    {
       bzero(cmd,sizeof(cmd));
-      if (( recvfrom(fifo_fd, cmd, 10, 0,(struct sockaddr *) &lg_cmd ,&res)) < 0)
+      if (( cmd_len = recvfrom(fifo_fd, cmd, 10, 0,(struct sockaddr *) &lg_cmd ,&res)) < 0)
       {
 	 perror("recvfrom");
 	 exit(1);
       }
-      switch( get_cmd(cmd))
+      switch( get_cmd(cmd, cmd_len))
 	 {
 	 case VOLUP:
 	    printf("VOLUP\n");

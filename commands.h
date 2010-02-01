@@ -51,23 +51,5 @@
 #define R_VOL_SUCCESS(set,vol) f set set OK vol
 #define R_VOL_FAILURE(set,vol) f set NG vol
 
-int get_cmd( char *cmd )
-{
-   
-   if( !strcmp(cmd,"VOLUP")) return VOLUP;
-   if( !strcmp(cmd,"VOLDN")) return VOLDN;
-   if( !strcmp(cmd,"MUTE")) return MUTE;
-   if( !strcmp(cmd,"ON")) return ON;
-   if( !strcmp(cmd,"OFF")) return OFF;
-   if( !strcmp(cmd,"AVI1")) return AVI1;
-   if( !strcmp(cmd,"AVI2")) return AVI2;
-   if( !strcmp(cmd,"COMP1")) return COMP1;
-   if( !strcmp(cmd,"COMP2")) return COMP2;
-   if( !strcmp(cmd,"RGB")) return RGB;
-   if( !strcmp(cmd,"HDMI1")) return HDMI1;
-   if( !strcmp(cmd,"HDMI2")) return HDMI2;
-   if( !strcmp(cmd,"HDMI3")) return HDMI3;
-
-}
 
 

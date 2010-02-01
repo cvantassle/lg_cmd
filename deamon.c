@@ -30,25 +30,22 @@
 #define SERIALDEV "/dev/ttyS0"
 #define CMD_FIFO  "/tmp/lg_cmd"
 #define MAX_FD	  3
-//void signal_handler_IO (int status,siginfo_t *info, void *context);
-
 
 
 int main(int argc, char *argv[])
 {
-   int serial_fd, fifo_fd, endfd;
+   int serial_fd, fifo_fd;
    int res = 0;
-   int read_status = 0;
    pid_t pid;
    char from_tv[20];
    char to_tv[20];
    char cmd[10];
-   fd_set inputs;
+   int vol;
    struct termios ctl_port;
    struct sockaddr_in lg_cmd;
-/* This needs to be set 
+/* This needs to be set  */
    int tv_id=00; 
-   */
+  
    
    /* Deamonize the Application */
    if ((pid = fork()) == -1  )
@@ -99,13 +96,59 @@ int main(int argc, char *argv[])
 
    while(1)
    {
-      if (( recvfrom(fifo_fd, cmd, 10, 0,(struct sockaddr *) &lg_cmd ,&res)) <0)
+      bzero(cmd,sizeof(cmd));
+      if (( recvfrom(fifo_fd, cmd, 10, 0,(struct sockaddr *) &lg_cmd ,&res)) < 0)
       {
 	 perror("recvfrom");
 	 exit(1);
-      }  
-      if ( res != 0)
-	 fputs(cmd,stderr);
+      }
+      switch( get_cmd(cmd))
+	 {
+	 case VOLUP:
+	    
+	    break;
+	    /* vol up*/
+	 case VOLDN:
+	    
+	    break;
+	    /* vol down*/
+	 case MUTE:
+	    
+	    break;
+	    /* Mute */
+	 case ON:
+	    
+	    break;
+	 case OFF:
+	    
+	    break;
+	 case AVI1:
+	    
+	    break;
+	 case AVI2:
+	    
+	    break;
+	 case COMP1:
+	    
+	    break;
+	 case COMP2:
+	    
+	    break;
+	 case RGB:
+	    
+	    break;
+	 case HDMI1:
+	    
+	    break;
+	 case HDMI2:
+	    
+	    break;
+	 case HDMI3:
+	    
+	    break;
+	 default:
+	    break;
+	 };
    };
 
    /* We should never Reach this point */

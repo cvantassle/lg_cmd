@@ -105,46 +105,46 @@ int main(int argc, char *argv[])
       switch( get_cmd(cmd))
 	 {
 	 case VOLUP:
-	    
+	    printf("VOLUP\n");
 	    break;
 	    /* vol up*/
 	 case VOLDN:
-	    
+	    printf("VOLDN\n");
 	    break;
 	    /* vol down*/
 	 case MUTE:
-	    
+	    printf("MUTE\n");
 	    break;
 	    /* Mute */
 	 case ON:
-	    
+	    printf("ON\n");
 	    break;
 	 case OFF:
-	    
+	    printf("OFF\n");
 	    break;
 	 case AVI1:
-	    
+	    printf("AVI1\n");
 	    break;
 	 case AVI2:
-	    
+	    printf("AVI2\n");
 	    break;
 	 case COMP1:
-	    
+	    printf("COMP1\n");
 	    break;
 	 case COMP2:
-	    
+	    printf("COMP2\n");
 	    break;
 	 case RGB:
-	    
+	    printf("RGB\n");
 	    break;
 	 case HDMI1:
-	    
+	    printf("HDMI1\n");
 	    break;
 	 case HDMI2:
-	    
+	    printf("HDMI2\n");
 	    break;
 	 case HDMI3:
-	    
+	    printf("HDMI3\n");
 	    break;
 	 default:
 	    break;

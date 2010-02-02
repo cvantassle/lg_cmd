@@ -115,59 +115,69 @@ int main(int argc, char *argv[])
 	 {
 	 case VOLUP:
 	    sprintf(to_tv,S_VOL_CTL(tv_id,vol++));
-	    printf("VOLUP\n");
+	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+	       perror("write");
 	    break;
-	    /* vol up*/
 	 case VOLDN:
 	    sprintf(to_tv,S_VOL_CTL(tv_id,vol--));
-	    printf("VOLDN\n");
+	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+	       perror("write");
 	    break;
-	    /* vol down*/
 	 case MUTE:
 	    unmute = vol;
-	    //strcpy(to_tv,S_VOL_CTL(tv_id,00));
 	    sprintf(to_tv,S_VOL_CTL(tv_id,00));
+	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+	       perror("write");
 	    break;
-	    /* Mute */
 	 case ON:
 	    sprintf(to_tv,S_PWR_CTL(tv_id,ON));
-	    printf("ON\n");
+	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+	       perror("write");
 	    break;
 	 case OFF:
 	    sprintf(to_tv,S_PWR_CTL(tv_id,OFF));
-	    printf("OFF\n");
+	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+	       perror("write");
 	    break;
 	 case AVI1:
 	    sprintf(to_tv,S_INPUT(tv_id,AVI1));
-	    printf("AVI1\n");
+	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+	       perror("write");
 	    break;
 	 case AVI2:
 	    sprintf(to_tv,S_INPUT(tv_id,AVI2));
-	    printf("AVI2\n");
+	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+	       perror("write");
 	    break;
 	 case COMP1:
 	    sprintf(to_tv,S_INPUT(tv_id,COMP1));
-	    printf("COMP1\n");
+	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+	       perror("write");
 	    break;
 	 case COMP2:
 	    sprintf(to_tv,S_INPUT(tv_id,COMP2));
-	    printf("COMP2\n");
+	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+	       perror("write");
 	    break;
 	 case RGB:
 	    sprintf(to_tv,S_INPUT(tv_id,RGB));
-	    printf("RGB\n");
+	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+	       perror("write");
 	    break;
 	 case HDMI1:
 	    sprintf(to_tv,S_INPUT(tv_id,HDMI1));
-	    printf("HDMI1\n");
+	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+	       perror("write");
 	    break;
 	 case HDMI2:
 	    sprintf(to_tv,S_INPUT(tv_id,HDMI2));
-	    printf("HDMI2\n");
+	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+	       perror("write");
 	    break;
 	 case HDMI3:
 	    sprintf(to_tv,S_INPUT(tv_id,HDMI3));
-	    printf("HDMI3\n");
+	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+	       perror("write");
 	    break;
 	 default:
 	    break;

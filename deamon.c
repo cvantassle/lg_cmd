@@ -44,7 +44,7 @@ int get_cmd( char *cmd, int len)
 
 int main(int argc, char *argv[])
 {
-   int serial_fd, fifo_fd, cmd_len, vol, unmute;
+   int serial_fd, fifo_fd, cmd_len, vol = 0, unmute;
    int res = 0;
    pid_t pid;
    char from_tv[20];
@@ -114,54 +114,59 @@ int main(int argc, char *argv[])
       switch( get_cmd(cmd, cmd_len))
 	 {
 	 case VOLUP:
-	    vol++;
-	    
+	    sprintf(to_tv,S_VOL_CTL(tv_id,vol++));
 	    printf("VOLUP\n");
 	    break;
 	    /* vol up*/
 	 case VOLDN:
-	    vol--;
+	    sprintf(to_tv,S_VOL_CTL(tv_id,vol--));
 	    printf("VOLDN\n");
 	    break;
 	    /* vol down*/
 	 case MUTE:
-	    if (!vol)
-	    {
-	       unmute = vol;
-	       sprintf(to_tv, "ke %d %x",tv_id,vol,serial_fd);
-	       printf("MUTE\n unmute=%d\n",unmute);
-	    }
-	    printf("MUTE\n");
+	    unmute = vol;
+	    //strcpy(to_tv,S_VOL_CTL(tv_id,00));
+	    sprintf(to_tv,S_VOL_CTL(tv_id,00));
 	    break;
 	    /* Mute */
 	 case ON:
+	    sprintf(to_tv,S_PWR_CTL(tv_id,ON));
 	    printf("ON\n");
 	    break;
 	 case OFF:
+	    sprintf(to_tv,S_PWR_CTL(tv_id,OFF));
 	    printf("OFF\n");
 	    break;
 	 case AVI1:
+	    sprintf(to_tv,S_INPUT(tv_id,AVI1));
 	    printf("AVI1\n");
 	    break;
 	 case AVI2:
+	    sprintf(to_tv,S_INPUT(tv_id,AVI2));
 	    printf("AVI2\n");
 	    break;
 	 case COMP1:
+	    sprintf(to_tv,S_INPUT(tv_id,COMP1));
 	    printf("COMP1\n");
 	    break;
 	 case COMP2:
+	    sprintf(to_tv,S_INPUT(tv_id,COMP2));
 	    printf("COMP2\n");
 	    break;
 	 case RGB:
+	    sprintf(to_tv,S_INPUT(tv_id,RGB));
 	    printf("RGB\n");
 	    break;
 	 case HDMI1:
+	    sprintf(to_tv,S_INPUT(tv_id,HDMI1));
 	    printf("HDMI1\n");
 	    break;
 	 case HDMI2:
+	    sprintf(to_tv,S_INPUT(tv_id,HDMI2));
 	    printf("HDMI2\n");
 	    break;
 	 case HDMI3:
+	    sprintf(to_tv,S_INPUT(tv_id,HDMI3));
 	    printf("HDMI3\n");
 	    break;
 	 default:

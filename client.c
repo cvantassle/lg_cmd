@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
       strcpy(cmd,"MUTE");
       if (sendto(sock, cmd, strlen(cmd), 0,(struct sockaddr *) &cmd_srv,sizeof(cmd_srv)) != strlen(cmd))
       {
-	 perror("ON sending error");
+	 perror("MUTE sending error");
       }
    default:
       return 0;

@@ -53,8 +53,7 @@
  */
 #define S_INPUT(set,source) "xb %.2d %.2d",set, source
 #define S_SCREEN_MUTE(set) "kd %.2d %.2d", set, state
-#define S_VOL_MUTE(set,state) "ke %.2d %2d", set, state
-#define S_VOL_CTL(set,vol) "kf %.2d %.2d", set, vol
+#define S_VOL_CTL(set,vol) "kf %.2x %.2x", set, vol
 #define S_PWR_CTL(set,state) "ka %.2d %.2d", set, state
 
 /*

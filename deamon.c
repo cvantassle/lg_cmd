@@ -131,6 +131,7 @@ int main(int argc, char *argv[])
 	       sprintf(to_tv, "ke %d %x",tv_id,vol,serial_fd);
 	       printf("MUTE\n unmute=%d\n",unmute);
 	    }
+	    printf("MUTE\n");
 	    break;
 	    /* Mute */
 	 case ON:

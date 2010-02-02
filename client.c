@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
    cmd_srv.sin_addr.s_addr = inet_addr("127.0.0.1");  
    cmd_srv.sin_port = htons(6100);
    
-   switch(getopt(argc, argv, "duh:rofa:c:"))
+   switch(getopt(argc, argv, "mduh:rofa:c:"))
    {
    case 'u':
       strcpy(cmd,"VOLUP");
@@ -63,11 +63,44 @@ int main(int argc, char *argv[])
       }
       break;
    case 'a':
+      strcpy(cmd,"AVI");
+      strcat(cmd,optarg);
+      if (atoi(optarg) <= 2)
+      {
+	 if(sendto(sock, cmd, strlen(cmd), 0,(struct sockaddr *) &cmd_srv,sizeof(cmd_srv)) != strlen(cmd))
+	 {
+	    perror("OFF sending error");
+	 }
+      }
       break;
    case 'c':
+      strcpy(cmd,"COMP");
+      strcat(cmd,optarg);
+      if (atoi(optarg) <= 2)
+      {
+	 if(sendto(sock, cmd, strlen(cmd), 0,(struct sockaddr *) &cmd_srv,sizeof(cmd_srv)) != strlen(cmd))
+	 {
+	    perror("OFF sending error");
+	 }	
+      }
       break;
    case 'h':
+      strcpy(cmd,"HDMI");
+      strcat(cmd,optarg);
+      if (atoi(optarg) <= 3)
+      {
+	 if(sendto(sock, cmd, strlen(cmd), 0,(struct sockaddr *) &cmd_srv,sizeof(cmd_srv)) != strlen(cmd))
+	 {
+	    perror("OFF sending error");
+	 }	
+      }      
       break;
+   case 'm':
+      strcpy(cmd,"MUTE");
+      if (sendto(sock, cmd, strlen(cmd), 0,(struct sockaddr *) &cmd_srv,sizeof(cmd_srv)) != strlen(cmd))
+      {
+	 perror("ON sending error");
+      }
    default:
       return 0;
       break;

@@ -114,18 +114,37 @@ int main(int argc, char *argv[])
       switch( get_cmd(cmd, cmd_len))
 	 {
 	 case VOLUP:
-	    sprintf(to_tv,S_VOL_CTL(tv_id,vol++));
-	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-	       perror("write");
+	    if( vol < 100)
+	    {
+	       sprintf(to_tv,S_VOL_CTL(tv_id,vol++));
+	       printf("%s %d\n", to_tv,vol);
+	       if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+		  perror("write");
+	    }
 	    break;
 	 case VOLDN:
-	    sprintf(to_tv,S_VOL_CTL(tv_id,vol--));
-	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-	       perror("write");
+	    if ( vol > 0)
+	    {
+	       sprintf(to_tv,S_VOL_CTL(tv_id,vol--));
+	       printf("%s %d\n", to_tv,vol);
+	       if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+		  perror("write");
+	    }
 	    break;
 	 case MUTE:
-	    unmute = vol;
-	    sprintf(to_tv,S_VOL_CTL(tv_id,00));
+	    if ( unmute == 0 )
+	    {
+	       unmute = vol;
+	       sprintf(to_tv,S_VOL_CTL(tv_id,00));
+	       printf("%s %d unmute=%d\n", to_tv,vol,unmute);
+	    }
+	    else
+	    {
+	       vol = unmute;
+	       unmute = 0;
+	       sprintf(to_tv,S_VOL_CTL(tv_id,vol));
+	       printf("%s %d unmute=%d\n", to_tv,vol,unmute);
+	    }
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
 	       perror("write");
 	    break;

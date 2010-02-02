@@ -41,7 +41,7 @@
 
 /* Commands set to the tv */
 
-#define S_POWER(set,state) ka set state
+#define S_POWER(set,state) "ka %.2d %.2d",set, state
 
 /*
  * Input Selection data controls 

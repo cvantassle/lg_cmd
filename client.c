@@ -1,6 +1,6 @@
 /* this is the Client part of the lg_cmd deamon.
    This is intended to be called from lirc and it will send commands to the control deamon
-   Options are u for volume,d for volume down,  m for mute, h1-3 for HDMI inputs, r for rgb, o for on, f for off
+   Options are u for volume,d for volume down,  m for mute, h1-3 for HDMI inputs, r for rgb, p to toggle Power state
    a# for avi input, c# for composit
 */
 
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
    cmd_srv.sin_addr.s_addr = inet_addr("127.0.0.1");  
    cmd_srv.sin_port = htons(6100);
    
-   switch(getopt(argc, argv, "mduh:rofa:c:"))
+   switch(getopt(argc, argv, "mduh:rpa:c:"))
    {
    case 'u':
       strcpy(cmd,"VOLUP");
@@ -100,6 +100,13 @@ int main(int argc, char *argv[])
       if (sendto(sock, cmd, strlen(cmd), 0,(struct sockaddr *) &cmd_srv,sizeof(cmd_srv)) != strlen(cmd))
       {
 	 perror("MUTE sending error");
+      }
+      break;
+   case 'p':
+      strcpy(cmd,"POWER");
+      if (sendto(sock, cmd, strlen(cmd), 0,(struct sockaddr *) &cmd_srv,sizeof(cmd_srv)) != strlen(cmd))
+      {
+	 perror("POWER sending error");
       }
    default:
       return 0;

@@ -27,8 +27,7 @@ int get_cmd( char *cmd, int len)
    if( !strncmp(cmd,"VOLUP",len)) return VOLUP;
    if( !strncmp(cmd,"VOLDN",len)) return VOLDN;
    if( !strncmp(cmd,"MUTE",len)) return MUTE;
-   if( !strncmp(cmd,"ON",len)) return ON;
-   if( !strncmp(cmd,"OFF",len)) return OFF;
+   if( !strncmp(cmd,"POWER",len)) return 'p';
    if( !strncmp(cmd,"AVI1",len)) return AVI1;
    if( !strncmp(cmd,"AVI2",len)) return AVI2;
    if( !strncmp(cmd,"COMP1",len)) return COMP1;
@@ -44,7 +43,7 @@ int get_cmd( char *cmd, int len)
 
 int main(int argc, char *argv[])
 {
-   int serial_fd, fifo_fd, cmd_len, vol = 0, unmute;
+   int serial_fd, fifo_fd, cmd_len, vol = 0, unmute = 0, pw = OFF ;
    int res = 0;
    pid_t pid;
    char from_tv[20];
@@ -148,16 +147,22 @@ int main(int argc, char *argv[])
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
 	       perror("write");
 	    break;
-	 case ON:
-	    sprintf(to_tv,S_PWR_CTL(tv_id,ON));
+	 case 'p':
+	    if ( pw == OFF)
+	    {
+	       sprintf(to_tv,S_POWER(tv_id,ON));
+	       pw = ON;
+	    }
+	    else if ( pw == ON)
+	    {
+	       sprintf(to_tv,S_POWER(tv_id,OFF));
+	       pw = OFF;
+	    }
+	    printf("%s pw=%d\n", to_tv,pw);
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
 	       perror("write");
 	    break;
-	 case OFF:
-	    sprintf(to_tv,S_PWR_CTL(tv_id,OFF));
-	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-	       perror("write");
-	    break;
+
 	 case AVI1:
 	    sprintf(to_tv,S_INPUT(tv_id,AVI1));
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )

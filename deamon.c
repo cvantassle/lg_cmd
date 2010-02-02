@@ -115,6 +115,7 @@ int main(int argc, char *argv[])
 	 {
 	 case VOLUP:
 	    vol++;
+	    
 	    printf("VOLUP\n");
 	    break;
 	    /* vol up*/
@@ -124,10 +125,11 @@ int main(int argc, char *argv[])
 	    break;
 	    /* vol down*/
 	 case MUTE:
-	    if (vol)
+	    if (!vol)
 	    {
-	       vol = mute;
-	       printf("MUTE\n");
+	       unmute = vol;
+	       sprintf(to_tv, "ke %d %x",tv_id,vol,serial_fd);
+	       printf("MUTE\n unmute=%d\n",unmute);
 	    }
 	    break;
 	    /* Mute */

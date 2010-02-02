@@ -51,10 +51,10 @@
  * 60: RGB-PC
  * 90: HDMI-1 91: HDMI-2 92: HDMI-3 
  */
-#define S_INPUT(set,source) xb state source
-#define S_SCREEN_MUTE(set) kd set state
-#define S_VOL_MUTE(set,state) ke set state
-#define S_VOL_CTL(set,vol) kf set vol
+#define S_INPUT(set,source) "xb" ##set ##source
+#define S_SCREEN_MUTE(set) "kd" ##set ##state
+#define S_VOL_MUTE(set,state) "ke" ##set ##state
+#define S_VOL_CTL(set,vol) "kf" ##set ##vol
 
 /*
  * Return data from the tv

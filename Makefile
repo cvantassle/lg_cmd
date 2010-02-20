@@ -1,10 +1,11 @@
 CC=gcc
 EDIT=/usr/bin/vim -p
+EXEC=lg_cmd
 
 comp: clean
-	$(CC) -I. -o log_cmd deamon.c 
+	$(CC) -I. -o $(EXEC)  daemon.c 
 
 clean:
-	rm -frv log_cmd
+	rm -frv $(EXEC)
 edit:
 	$(EDIT) *.c *.h

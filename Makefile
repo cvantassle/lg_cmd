@@ -1,11 +1,19 @@
 CC=gcc
 EDIT=/usr/bin/vim -p
-EXEC=lg_cmd
+DBIN=lg_daemon
+CBIN=lg_client
 
-comp: clean
-	$(CC) -I. -o $(EXEC)  daemon.c 
+all: clean client daemon
+
+daemon: 
+	$(CC) -I. -o $(DBIN)  daemon.c 
 
 clean:
-	rm -frv $(EXEC)
+	rm -frv $(DBIN)
+	rm -frv $(CBIN)
+
 edit:
 	$(EDIT) *.c *.h
+
+client:
+	$(CC) -I. -o $(CBIN) client.c

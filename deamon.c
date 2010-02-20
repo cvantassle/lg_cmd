@@ -11,8 +11,7 @@
 #include "commands.h"
 
 /* At some point I need to set this to be set via CLI or VIA a config file */
-#define SERIALDEV "/dev/ttyS0"
-#define CMD_FIFO  "/tmp/lg_cmd"
+#define SERIALDEV "/dev/ttyUSB0"
 #define MAX_FD	  3
 
 int get_cmd( char *cmd, int len)
@@ -67,23 +66,27 @@ int main(int argc, char *argv[])
       exit(0);
    }
    
-   if ( (serial_fd=open(SERIALDEV, O_RDWR | O_NOCTTY | O_NONBLOCK )) < 0)
+   if ( (serial_fd=open(SERIALDEV, O_RDWR | O_NOCTTY | O_NDELAY )) < 0)
    {
       perror(SERIALDEV);
       exit(1);
    }
-   tcgetattr(serial_fd, &ctl_port);
-   cfsetospeed(&ctl_port, B9600);
-   ctl_port.c_cflag |= (CLOCAL | CREAD);
-   ctl_port.c_cflag &= ~PARENB; 
-   ctl_port.c_cflag &= ~CSTOPB;
-   ctl_port.c_cflag &= ~CSIZE;
-   ctl_port.c_cflag |=  CS8;                              
-   ctl_port.c_cflag &= ~CRTSCTS;         
+   fcntl(serial_fd, F_SETFL, FASYNC );
+   tcgetattr(serial_fd, &ctl_port );
+   ctl_port.c_cflag = (CS8 | CREAD | B9600 | CLOCAL) ;
+   ctl_port.c_cflag &= ~HUPCL; /* clear the HUPCL bit, close doesn't change DTR */
+   ctl_port.c_lflag = 0;
+   ctl_port.c_iflag = IGNPAR;
+   ctl_port.c_oflag = 0;
+   ctl_port.c_cc[VTIME] = 0;
+   ctl_port.c_cc[VMIN]  = 0;
    tcflush(serial_fd, TCIFLUSH);
-   tcsetattr(serial_fd, TCSANOW,&ctl_port);
-  
-
+   if ( tcsetattr( serial_fd, TCSANOW, &ctl_port ) == -1 )
+   {
+      perror("tcsetarrt");
+      exit(1);
+   }
+   fcntl(serial_fd, F_SETFL, FNDELAY);
    if ((fifo_fd = socket(PF_INET,SOCK_DGRAM, IPPROTO_UDP)) < 0)
    {
       perror("bind");
@@ -116,16 +119,18 @@ int main(int argc, char *argv[])
 	    if( vol < 100)
 	    {
 	       sprintf(to_tv,S_VOL_CTL(tv_id,vol++));
-	       printf("%s %d\n", to_tv,vol);
 	       if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
 		  perror("write");
 	    }
+	    if( read(serial_fd, from_tv, sizeof(from_tv)) < 0)
+	       printf("%s\n", from_tv);
+	    
+		 
 	    break;
 	 case VOLDN:
 	    if ( vol > 0)
 	    {
 	       sprintf(to_tv,S_VOL_CTL(tv_id,vol--));
-	       printf("%s %d\n", to_tv,vol);
 	       if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
 		  perror("write");
 	    }
@@ -135,14 +140,12 @@ int main(int argc, char *argv[])
 	    {
 	       unmute = vol;
 	       sprintf(to_tv,S_VOL_CTL(tv_id,00));
-	       printf("%s %d unmute=%d\n", to_tv,vol,unmute);
 	    }
 	    else
 	    {
 	       vol = unmute;
 	       unmute = 0;
 	       sprintf(to_tv,S_VOL_CTL(tv_id,vol));
-	       printf("%s %d unmute=%d\n", to_tv,vol,unmute);
 	    }
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
 	       perror("write");
@@ -158,7 +161,6 @@ int main(int argc, char *argv[])
 	       sprintf(to_tv,S_POWER(tv_id,OFF));
 	       pw = OFF;
 	    }
-	    printf("%s pw=%d\n", to_tv,pw);
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
 	       perror("write");
 	    break;

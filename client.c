@@ -113,6 +113,5 @@ int main(int argc, char *argv[])
       break;
    }
    /*we Should not Get here */
-   printf("Clean up goes here\n");
    return 0;
 }

@@ -71,10 +71,11 @@ int main(int argc, char *argv[])
       perror(SERIALDEV);
       exit(1);
    }
+/* I need to learn how to setup the Serial ports. But I think the USB/Serial Adapters auto set to 9600/8N1  
    fcntl(serial_fd, F_SETFL, FASYNC );
    tcgetattr(serial_fd, &ctl_port );
    ctl_port.c_cflag = (CS8 | CREAD | B9600 | CLOCAL) ;
-   ctl_port.c_cflag &= ~HUPCL; /* clear the HUPCL bit, close doesn't change DTR */
+   ctl_port.c_cflag &= ~HUPCL; 
    ctl_port.c_lflag = 0;
    ctl_port.c_iflag = IGNPAR;
    ctl_port.c_oflag = 0;
@@ -87,6 +88,7 @@ int main(int argc, char *argv[])
       exit(1);
    }
    fcntl(serial_fd, F_SETFL, FNDELAY);
+  */
    if ((fifo_fd = socket(PF_INET,SOCK_DGRAM, IPPROTO_UDP)) < 0)
    {
       perror("bind");

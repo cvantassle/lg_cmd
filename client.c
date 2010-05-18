@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
    cmd_srv.sin_addr.s_addr = inet_addr("127.0.0.1");  
    cmd_srv.sin_port = htons(6100);
    
-   switch(getopt(argc, argv, "mduh:rpa:c:"))
+   switch(getopt(argc, argv, "mduh:rpa:c:t"))
    {
    case 'u':
       strcpy(cmd,"VOLUP");
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
       strcpy(cmd,"VOLDN");
       if (sendto(sock, cmd, strlen(cmd), 0,(struct sockaddr *) &cmd_srv,sizeof(cmd_srv)) != strlen(cmd))
       {
-	 perror("VOLDM sending error");
+	 perror("VOLDN sending error");
       }
       break;
    case 'r':
@@ -108,6 +108,14 @@ int main(int argc, char *argv[])
       {
 	 perror("POWER sending error");
       }
+      break;
+   case 't':
+      strcpy(cmd,"COAX");
+      if (sendto(sock, cmd, strlen(cmd), 0,(struct sockaddr *) &cmd_srv,sizeof(cmd_srv)) != strlen(cmd))
+      {
+	 perror("Coax sending error");
+      }
+      break;
    default:
       return 0;
       break;

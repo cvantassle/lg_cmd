@@ -35,7 +35,7 @@ int get_cmd( char *cmd, int len)
    if( !strncmp(cmd,"HDMI1",len)) return HDMI1;
    if( !strncmp(cmd,"HDMI2",len)) return HDMI2;
    if( !strncmp(cmd,"HDMI3",len)) return HDMI3;
-
+   if( !strncmp(cmd,"COAX",len)) return COAX;
 }
 
 
@@ -122,19 +122,15 @@ int main(int argc, char *argv[])
 	    {
 	       sprintf(to_tv,S_VOL_CTL(tv_id,vol++));
 	       if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-		  perror("write");
+		  perror("write VOLUP");
 	    }
-	    if( read(serial_fd, from_tv, sizeof(from_tv)) < 0)
-	       printf("%s\n", from_tv);
-	    
-		 
 	    break;
 	 case VOLDN:
 	    if ( vol > 0)
 	    {
 	       sprintf(to_tv,S_VOL_CTL(tv_id,vol--));
 	       if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-		  perror("write");
+		  perror("write VOLDN");
 	    }
 	    break;
 	 case MUTE:
@@ -150,7 +146,7 @@ int main(int argc, char *argv[])
 	       sprintf(to_tv,S_VOL_CTL(tv_id,vol));
 	    }
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-	       perror("write");
+	       perror("write mute");
 	    break;
 	 case 'p':
 	    if ( pw == OFF)
@@ -164,49 +160,53 @@ int main(int argc, char *argv[])
 	       pw = OFF;
 	    }
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-	       perror("write");
+	       perror("write POWER");
 	    break;
 
 	 case AVI1:
 	    sprintf(to_tv,S_INPUT(tv_id,AVI1));
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-	       perror("write");
+	       perror("write AVI1");
 	    break;
 	 case AVI2:
 	    sprintf(to_tv,S_INPUT(tv_id,AVI2));
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-	       perror("write");
+	       perror("write AVI2");
 	    break;
 	 case COMP1:
 	    sprintf(to_tv,S_INPUT(tv_id,COMP1));
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-	       perror("write");
+	       perror("write COMP1");
 	    break;
 	 case COMP2:
 	    sprintf(to_tv,S_INPUT(tv_id,COMP2));
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-	       perror("write");
+	       perror("write COMP2");
 	    break;
 	 case RGB:
 	    sprintf(to_tv,S_INPUT(tv_id,RGB));
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-	       perror("write");
+	       perror("write RGB");
 	    break;
 	 case HDMI1:
 	    sprintf(to_tv,S_INPUT(tv_id,HDMI1));
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-	       perror("write");
+	       perror("write HDMI1");
 	    break;
 	 case HDMI2:
 	    sprintf(to_tv,S_INPUT(tv_id,HDMI2));
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-	       perror("write");
+	       perror("write HDMI2");
 	    break;
 	 case HDMI3:
 	    sprintf(to_tv,S_INPUT(tv_id,HDMI3));
 	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
-	       perror("write");
+	       perror("write HDMI3");
 	    break;
+	 case COAX:
+	    sprintf(to_tv,S_INPUT(tv_id,COAX));
+	    if ( write(serial_fd,to_tv,strlen(to_tv)) < 0 )
+	       perror("write coax");
 	 default:
 	    break;
 	 };
